@@ -1,10 +1,13 @@
-import {useState, useEffect, use} from 'react';
+import {useState, useEffect} from 'react';
+import EncryptedStorage from 'react-native-encrypted-storage';
+
 import {getZipCode} from '../../api/resources';
 
 interface Address {
   cep: string;
   logradouro: string;
   complemento: string;
+  numero: string;
   bairro: string;
   localidade: string;
   uf: string;
@@ -12,14 +15,22 @@ interface Address {
 
 export const useRegistration = () => {
   const [zipCode, setZipCode] = useState('');
-  const [street, setStreet] = useState('');
-  const [complement, setComplement] = useState('');
-  const [neighborhood, setNeighborhood] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [number, setNumber] = useState('');
-
   const [dataClient, setDataClient] = useState<Address | null>(null);
+
+  const saveRegister = async address => {
+    try {
+      await EncryptedStorage.setItem(
+        'REG_COSTUMER',
+        JSON.stringify({teste: 'tresate'}),
+      );
+    } catch (_err) {
+      console.log(_err);
+    }
+  };
+
+  const getRegister = async () => {
+    return await EncryptedStorage.getItem('REG_COSTUMER');
+  };
 
   useEffect(() => {
     const fetch = async () => {
@@ -33,17 +44,12 @@ export const useRegistration = () => {
     fetch();
   }, [zipCode]);
 
-  useEffect(() => {}, [dataClient]);
-
   return {
     zipCode,
     setZipCode,
     dataClient,
-    setStreet,
-    setComplement,
-    setNeighborhood,
-    setCity,
-    setState,
-    setNumber,
+    setDataClient,
+    saveRegister,
+    getRegister,
   };
 };

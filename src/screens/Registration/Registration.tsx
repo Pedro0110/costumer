@@ -1,24 +1,21 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {SafeAreaView, Text} from 'react-native';
 import styles from './Registration.style';
 import {TextInput} from '../../components';
 import {useRegistration} from './useRegistration';
+import {Button} from 'react-native-paper';
 
 const Registration = () => {
   const {
     zipCode,
     setZipCode,
     dataClient,
-    setStreet,
-    setComplement,
-    setNeighborhood,
-    setCity,
-    setState,
-    setNumber,
+    setDataClient,
+    saveRegister,
+    getRegister,
   } = useRegistration();
-
   return (
-    <View>
+    <SafeAreaView>
       <Text style={styles.title}>Cadastro</Text>
       <TextInput
         label="CEP"
@@ -28,52 +25,72 @@ const Registration = () => {
           setZipCode(value);
         }}
       />
+
       {dataClient && (
         <>
           <TextInput
             label="Endereço"
             value={dataClient.logradouro}
             onChangeText={value => {
-              setStreet(value);
+              setDataClient(() => ({...dataClient, ['logradouro']: value}));
             }}
           />
           <TextInput
             label="Bairro"
             value={dataClient.bairro}
             onChangeText={value => {
-              setNeighborhood(value);
+              setDataClient(() => ({...dataClient, ['bairro']: value}));
             }}
           />
           <TextInput
             label="Número"
+            keyboardType="numeric"
             onChangeText={value => {
-              setNumber(value);
+              setDataClient({...dataClient, ['numero']: value});
             }}
           />
           <TextInput
             label="Complemento"
             value={dataClient.complemento}
             onChangeText={value => {
-              setComplement(value);
+              setDataClient({...dataClient, ['complemento']: value});
             }}
           />
           <TextInput
             label="Cidade"
             value={dataClient.localidade}
             onChangeText={value => {
-              setCity(value);
+              setDataClient({...dataClient, ['localidade']: value});
             }}
           />
           <TextInput
             label="Estado"
             value={dataClient.uf}
             onChangeText={value => {
-              setState(value);
+              setDataClient({...dataClient, ['uf']: value});
             }}
           />
         </>
       )}
-    </View>
+      <Button
+        style={styles.buttonBottom}
+        mode="contained"
+        disabled={dataClient == null}
+        onPress={() => {
+          saveRegister(dataClient);
+        }}>
+        <Text>Continuar</Text>
+      </Button>
+      <Button
+        style={styles.buttonBottom}
+        mode="contained"
+        disabled={dataClient == null}
+        onPress={() => {
+          console.log(getRegister());
+        }}>
+        <Text>exibir banco</Text>
+      </Button>
+    </SafeAreaView>
   );
 };
 
